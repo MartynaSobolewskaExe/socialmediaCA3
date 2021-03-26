@@ -7,9 +7,9 @@ import java.util.List;
  * A class representing user's account
  */
 public class Account {
-    private long id;
+    private int id;
     // will increment with each new account. Will make sure that they all have an unique numerical id
-    private static long counter;
+    private static int counter = 0;
     private String descriptionField;
     private String handle;
     private static List<String> accountHandles = new ArrayList<>();
@@ -21,7 +21,7 @@ public class Account {
      * @throws IllegalHandleException if the handle already exists in the platform.
      * @throws InvalidHandleException if the new handle is empty, has more than 30 characters, or has white spaces.
      */
-    public Account(String descriptionField, String handle) throws IllegalHandleException, InvalidHandleException {
+    public Account( String handle, String descriptionField) throws IllegalHandleException, InvalidHandleException {
         setId();
         setHandle(handle);
         setDescriptionField(descriptionField);
@@ -38,7 +38,7 @@ public class Account {
         setHandle(handle);
     }
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 
@@ -73,9 +73,10 @@ public class Account {
                 this.handle = handle;
                 accountHandles.add(handle);
             }else
-                throw new IllegalHandleException();
+                throw new IllegalHandleException("Handle '" + handle+ "' already exists in the system.");
         }else
-            throw new InvalidHandleException();
+            throw new InvalidHandleException("Handle '"+ handle +"' is empty, has more than 30 characters," +
+                    " or has white spaces");
     }
 
     /**
@@ -86,5 +87,9 @@ public class Account {
     private boolean containsWhitespace(String str){
         // true if contains onw or more instances of any whitespace character
         return str.matches(".*\\s.*");
+    }
+
+    public void removeAccount(){
+        accountHandles.remove(this.handle);
     }
 }

@@ -1,38 +1,79 @@
 package socialmedia;
 
+import javax.security.auth.login.AccountNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
- * BadSocialMedia is a minimally compiling, but non-functioning implementor of
- * the SocialMediaPlatform interface.
- * 
- * @author Diogo Pacheco
- * @version 1.0
+ * SocialMedia is an implementor of the SocialMediaPlatform interface.
  */
-public class BadSocialMedia implements SocialMediaPlatform {
+public class SocialMedia implements SocialMediaPlatform {
+
+	private static final Logger LOGGER = Logger.getLogger( SocialMedia.class.getName());
+	private List<Account> accounts = new ArrayList<>();
 
 	@Override
 	public int createAccount(String handle) throws IllegalHandleException, InvalidHandleException {
-		// TODO Auto-generated method stub
-		return 0;
+		Account account = new Account(handle);
+		accounts.add(account);
+		return account.getId();
 	}
 
 	@Override
 	public int createAccount(String handle, String description) throws IllegalHandleException, InvalidHandleException {
-		// TODO Auto-generated method stub
-		return 0;
+		try {
+			Account account = new Account(handle, description);
+			accounts.add(account);
+			return account.getId();
+		}catch (IllegalHandleException ihe){
+			LOGGER.log( Level.SEVERE, ihe.toString(), ihe );
+			return -1;
+
+		}catch (InvalidHandleException ine){
+			LOGGER.log( Level.SEVERE, ine.toString(), ine );
+			return -1;
+		}
 	}
 
 	@Override
 	public void removeAccount(int id) throws AccountIDNotRecognisedException {
-		// TODO Auto-generated method stub
-
+		boolean found = false;
+		int foundIndex = -1;
+		for (int i = 0; i < accounts.size() && !found; i++) {
+			if (accounts.get(i).getId() == id){
+				found = true;
+				foundIndex = i;
+			}
+		}
+		if (found){
+			accounts.get(foundIndex).removeAccount();
+			accounts.remove(foundIndex);
+		}
+		else {
+			throw new AccountIDNotRecognisedException("Account with id: " + id + " not found in the system.");
+		}
 	}
 
 	@Override
 	public void removeAccount(String handle) throws HandleNotRecognisedException {
-		// TODO Auto-generated method stub
-
+		boolean found = false;
+		int foundIndex = -1;
+		for (int i = 0; i < accounts.size() && !found; i++) {
+			if (accounts.get(i).getHandle() == handle){
+				found = true;
+				foundIndex = i;
+			}
+		}
+		if (found){
+			accounts.get(foundIndex).removeAccount();
+			accounts.remove(foundIndex);
+		}
+		else {
+			throw new HandleNotRecognisedException("Account with handle: " + handle + " not found in the system.");
+		}
 	}
 
 	@Override
@@ -145,6 +186,10 @@ public class BadSocialMedia implements SocialMediaPlatform {
 	public void loadPlatform(String filename) throws IOException, ClassNotFoundException {
 		// TODO Auto-generated method stub
 
+	}
+
+	public List<Account> getAllAccounts(){
+		return accounts;
 	}
 
 }
