@@ -36,6 +36,7 @@ public class Account {
     public Account(String handle) throws IllegalHandleException, InvalidHandleException {
         setId();
         setHandle(handle);
+        setDescriptionField("");
     }
 
     public int getId() {
@@ -96,5 +97,14 @@ public class Account {
 
     public void removeAccount(){
         accountHandles.remove(this.handle);
+    }
+
+    @Override
+    public String toString() {
+        return "Account{" +
+                "id=" + id +
+                ", descriptionField='" + descriptionField + '\'' +
+                ", handle='" + handle + '\'' +
+                '}';
     }
 }

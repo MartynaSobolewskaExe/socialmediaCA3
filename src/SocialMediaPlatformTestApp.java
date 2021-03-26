@@ -1,5 +1,6 @@
 import socialmedia.*;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -104,6 +105,26 @@ public class SocialMediaPlatformTestApp {
 		} catch (InvalidHandleException ihe) {
 			assert (false) : "InvalidHandleException thrown incorrectly";
 		} catch (HandleNotRecognisedException hnre) {
+			assert (false) : "HandleNotRecognisedException thrown incorrectly";
+		}
+
+		// change description test
+		try {
+			int id = platform.createAccount("xyz123", "lorem ipsum");
+			platform.updateAccountDescription("xyz123", "abcdef");
+			boolean changed = false;
+			List<Account> accounts = platform.getAllAccounts();
+			for (int i = 0; i < accounts.size() && !changed; i++) {
+				if (accounts.get(i).getDescriptionField().equals("abcdef")){
+					changed = true;
+				}
+			}
+			assert (changed) : "No error thrown but the description was not changed.";
+		}catch (IllegalHandleException ihe){
+			assert (false) : "IllegalHandleException thrown incorrectly";
+		} catch (InvalidHandleException ihe) {
+			assert (false) : "InvalidHandleException thrown incorrectly";
+		} catch (HandleNotRecognisedException e) {
 			assert (false) : "HandleNotRecognisedException thrown incorrectly";
 		}
 

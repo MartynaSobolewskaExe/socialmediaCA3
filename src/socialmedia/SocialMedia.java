@@ -40,25 +40,32 @@ public class SocialMedia implements SocialMediaPlatform {
 
 	@Override
 	public void removeAccount(int id) throws AccountIDNotRecognisedException {
-		boolean found = false;
-		int foundIndex = -1;
-		for (int i = 0; i < accounts.size() && !found; i++) {
-			if (accounts.get(i).getId() == id){
-				found = true;
-				foundIndex = i;
-			}
-		}
-		if (found){
-			accounts.get(foundIndex).removeAccount();
-			accounts.remove(foundIndex);
-		}
-		else {
-			throw new AccountIDNotRecognisedException("Account with id: " + id + " not found in the system.");
-		}
+		Account a = getAccountById(id);
+		a.removeAccount();
+		accounts.remove(a);
 	}
 
 	@Override
 	public void removeAccount(String handle) throws HandleNotRecognisedException {
+		Account a = getAccountByHandle(handle);
+		a.removeAccount();
+		accounts.remove(a);
+	}
+
+	@Override
+	public void changeAccountHandle(String oldHandle, String newHandle)
+			throws HandleNotRecognisedException, IllegalHandleException, InvalidHandleException {
+		Account a = getAccountByHandle(oldHandle);
+		a.changeAccountHandle(newHandle);
+	}
+
+	/**
+	 * Finds account with a given handle.
+	 * @param handle handle to identify the account.
+	 * @return account with a given handle.
+	 * @throws HandleNotRecognisedException if there is no matching account.
+	 */
+	public Account getAccountByHandle(String handle) throws HandleNotRecognisedException {
 		boolean found = false;
 		int foundIndex = -1;
 		for (int i = 0; i < accounts.size() && !found; i++) {
@@ -68,38 +75,40 @@ public class SocialMedia implements SocialMediaPlatform {
 			}
 		}
 		if (found){
-			accounts.get(foundIndex).removeAccount();
-			accounts.remove(foundIndex);
+			return accounts.get(foundIndex);
 		}
 		else {
 			throw new HandleNotRecognisedException("Account with handle: " + handle + " not found in the system.");
 		}
 	}
 
-	@Override
-	public void changeAccountHandle(String oldHandle, String newHandle)
-			throws HandleNotRecognisedException, IllegalHandleException, InvalidHandleException {
+	/**
+	 * Finds account with a given id.
+	 * @param id id to identify the account.
+	 * @return account with a given id.
+	 * @throws AccountIDNotRecognisedException
+	 */
+	public Account getAccountById(int id) throws AccountIDNotRecognisedException {
 		boolean found = false;
 		int foundIndex = -1;
 		for (int i = 0; i < accounts.size() && !found; i++) {
-			if (accounts.get(i).getHandle() == oldHandle){
+			if (accounts.get(i).getId() == id){
 				found = true;
 				foundIndex = i;
 			}
 		}
 		if (found){
-			accounts.get(foundIndex).changeAccountHandle(newHandle);
+			return accounts.get(foundIndex);
 		}
 		else {
-			throw new HandleNotRecognisedException("Account with handle: " + oldHandle + " not found in the system.");
+			throw new AccountIDNotRecognisedException("Account with id: " + id + " not found in the system.");
 		}
-
 	}
 
 	@Override
 	public void updateAccountDescription(String handle, String description) throws HandleNotRecognisedException {
-		// TODO Auto-generated method stub
-
+		Account a = getAccountByHandle(handle);
+		a.setDescriptionField(description);
 	}
 
 	@Override
