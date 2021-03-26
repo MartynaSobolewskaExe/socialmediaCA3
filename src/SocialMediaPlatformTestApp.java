@@ -1,14 +1,14 @@
 import socialmedia.*;
 
+import java.util.List;
+
 /**
  * A short program to illustrate an app testing some minimal functionality of a
  * concrete implementation of the SocialMediaPlatform interface -- note you will
  * want to increase these checks, and run it on your SocialMedia class (not the
  * BadSocialMedia class).
  *
- * 
- * @author Diogo Pacheco
- * @version 1.0
+ *
  */
 public class SocialMediaPlatformTestApp {
 
@@ -80,17 +80,32 @@ public class SocialMediaPlatformTestApp {
 		}
 
 		try {
-			int id = platform.createAccount("xyz123");
 			platform.removeAccount(-9);
 			assert (false) : "AccountIDNotRecognisedException should be thrown";
-		}catch (IllegalHandleException ihe){
-			assert (false) : "IllegalHandleException thrown incorrectly";
-		}catch (InvalidHandleException ihe){
-			assert (false) : "InvalidHandleException thrown incorrectly";
 		}catch (AccountIDNotRecognisedException aidnre){
 			System.out.println("AccountIDNotRecognisedException thrown as it should");
 		}
 
+		// change account handle
+		try {
+			int id = platform.createAccount("xyz123");
+			platform.changeAccountHandle("xyz123", "abc123");
+			// check if account with new handle exists
+			boolean changed = false;
+			List<Account> accounts = platform.getAllAccounts();
+			for (int i = 0; i < accounts.size() && !changed; i++) {
+				if (accounts.get(i).getHandle().equals("abc123")){
+					changed = true;
+				}
+			}
+			assert (changed) : "No error thrown but the handle was not changed.";
+		} catch (IllegalHandleException ihe){
+			assert (false) : "IllegalHandleException thrown incorrectly";
+		} catch (InvalidHandleException ihe) {
+			assert (false) : "InvalidHandleException thrown incorrectly";
+		} catch (HandleNotRecognisedException hnre) {
+			assert (false) : "HandleNotRecognisedException thrown incorrectly";
+		}
 
 
 //		assert (platform.getNumberOfAccounts() == 0) : "Innitial SocialMediaPlatform not empty as required.";

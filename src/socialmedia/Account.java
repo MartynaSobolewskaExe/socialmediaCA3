@@ -79,6 +79,11 @@ public class Account {
                     " or has white spaces");
     }
 
+    public void changeAccountHandle(String newHandle)throws IllegalHandleException, InvalidHandleException{
+        accountHandles.remove(this.handle);
+        setHandle(newHandle);
+    }
+
     /**
      * Checks a string for whitespaces
      * @param str string checked for whitespaces

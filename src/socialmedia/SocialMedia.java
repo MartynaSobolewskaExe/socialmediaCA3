@@ -79,7 +79,20 @@ public class SocialMedia implements SocialMediaPlatform {
 	@Override
 	public void changeAccountHandle(String oldHandle, String newHandle)
 			throws HandleNotRecognisedException, IllegalHandleException, InvalidHandleException {
-		// TODO Auto-generated method stub
+		boolean found = false;
+		int foundIndex = -1;
+		for (int i = 0; i < accounts.size() && !found; i++) {
+			if (accounts.get(i).getHandle() == oldHandle){
+				found = true;
+				foundIndex = i;
+			}
+		}
+		if (found){
+			accounts.get(foundIndex).changeAccountHandle(newHandle);
+		}
+		else {
+			throw new HandleNotRecognisedException("Account with handle: " + oldHandle + " not found in the system.");
+		}
 
 	}
 
