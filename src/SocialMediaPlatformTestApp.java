@@ -23,7 +23,7 @@ public class SocialMediaPlatformTestApp {
 
 		SocialMedia platform = new SocialMedia();
 
-		// CREATE ACCOUNT TESTS
+		// ACCOUNT TESTS
 
 		try {
 			platform.createAccount("abc123", "wuevhweihv iewugviw iuwhgviuwh uhrvuiwh iuhviqghi ihrj.");
@@ -126,6 +126,60 @@ public class SocialMediaPlatformTestApp {
 			assert (false) : "InvalidHandleException thrown incorrectly";
 		} catch (HandleNotRecognisedException e) {
 			assert (false) : "HandleNotRecognisedException thrown incorrectly";
+		}
+
+		//POST TESTS
+		//create post tests
+		try {
+			platform.createPost("xyz123", "Lorem ipsum dolores sraka.");
+			//System.out.println(Arrays.toString(platform.getPosts().toArray()));
+
+		} catch (HandleNotRecognisedException e) {
+			assert (false) : "HandleNotRecognisedException thrown incorrectly";
+		} catch (InvalidPostException e) {
+			assert (false) : "InvalidPostException thrown incorrectly";
+		}
+
+		try {
+			platform.createPost("xyz1234", "Lorem ipsum dolores sraka.");
+			assert (false) : "Should throw HandleNotRecognisedException.";
+		} catch (HandleNotRecognisedException e) {
+			System.out.println("HandleNotRecognisedException thrown correctly");
+		} catch (InvalidPostException e) {
+			assert (false) : "InvalidPostException thrown incorrectly";
+		}
+
+		try {
+			platform.createPost("xyz123", " 	  ");
+			assert (false) : "Should throw InvalidPostException.";
+		} catch (HandleNotRecognisedException e) {
+			assert (false) : "HandleNotRecognisedException thrown incorrectly";
+		} catch (InvalidPostException e) {
+			System.out.println("InvalidPostException thrown correctly");
+		}
+
+		// endorse post tests
+
+		try {
+			platform.endorsePost("xyz123", 0);
+			System.out.println(Arrays.toString(platform.getPosts().toArray()));
+		} catch (HandleNotRecognisedException e) {
+			assert (false) : "HandleNotRecognisedException thrown incorrectly";
+		} catch (PostIDNotRecognisedException e) {
+			assert (false) : "PostIDNotRecognisedException thrown incorrectly";
+		} catch (NotActionablePostException e) {
+			assert (false) : "NotActionablePostException thrown incorrectly";
+		}
+
+		try {
+			platform.endorsePost("xyz123", 2);
+			assert (false) : "Should throw NotActionablePostException";
+		} catch (HandleNotRecognisedException e) {
+			assert (false) : "HandleNotRecognisedException thrown incorrectly";
+		} catch (PostIDNotRecognisedException e) {
+			assert (false) : "PostIDNotRecognisedException thrown incorrectly";
+		} catch (NotActionablePostException e) {
+			System.out.println("NotActionablePostException thrown correctly");
 		}
 
 

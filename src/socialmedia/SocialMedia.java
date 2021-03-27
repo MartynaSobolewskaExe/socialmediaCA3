@@ -14,6 +14,7 @@ public class SocialMedia implements SocialMediaPlatform {
 
 	private static final Logger LOGGER = Logger.getLogger( SocialMedia.class.getName());
 	private List<Account> accounts = new ArrayList<>();
+	private List<Post> posts = new ArrayList<>();
 
 	@Override
 	public int createAccount(String handle) throws IllegalHandleException, InvalidHandleException {
@@ -49,6 +50,7 @@ public class SocialMedia implements SocialMediaPlatform {
 	public void removeAccount(String handle) throws HandleNotRecognisedException {
 		Account a = getAccountByHandle(handle);
 		a.removeAccount();
+		// TODO: remove corresponding posts and likes too
 		accounts.remove(a);
 	}
 
@@ -113,21 +115,40 @@ public class SocialMedia implements SocialMediaPlatform {
 
 	@Override
 	public String showAccount(String handle) throws HandleNotRecognisedException {
-		// TODO Auto-generated method stub
-		return null;
+		Account a = getAccountByHandle(handle);
+		return a.toString();
 	}
 
 	@Override
 	public int createPost(String handle, String message) throws HandleNotRecognisedException, InvalidPostException {
-		// TODO Auto-generated method stub
-		return 0;
+		Account a = getAccountByHandle(handle);
+		Post p = new Post(message, a);
+		posts.add(p);
+		return p.getId();
 	}
 
 	@Override
 	public int endorsePost(String handle, int id)
 			throws HandleNotRecognisedException, PostIDNotRecognisedException, NotActionablePostException {
-		// TODO Auto-generated method stub
-		return 0;
+		Post p = getPostById(id);
+		Account a = getAccountByHandle(handle);
+		if (p instanceof Endorsement){
+			throw new NotActionablePostException("Post with id: '" + id + "' is an endorsement " +
+					"so it cannot be endorsed.");
+		}
+		Endorsement endorsement = new Endorsement(p,a);
+		posts.add(endorsement);
+		return endorsement.getId();
+	}
+
+
+	public Post getPostById(int id) throws PostIDNotRecognisedException{
+		for (int i = 0; i < posts.size(); i++) {
+			if (posts.get(i).getId() == id){
+				return posts.get(i);
+			}
+		}
+		throw new PostIDNotRecognisedException("Post with id: '" + id + "' not found.");
 	}
 
 	@Override
@@ -214,4 +235,5 @@ public class SocialMedia implements SocialMediaPlatform {
 		return accounts;
 	}
 
+	public List<Post> getPosts() {return posts; }
 }

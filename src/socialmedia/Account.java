@@ -8,6 +8,7 @@ import java.util.List;
  */
 public class Account {
     private int id;
+    private int numberOfEndorsements = 0;
     // will increment with each new account. Will make sure that they all have an unique numerical id
     private static int counter = 0;
     private String descriptionField;
@@ -97,6 +98,13 @@ public class Account {
 
     public void removeAccount(){
         accountHandles.remove(this.handle);
+    }
+
+    /**
+     * increments number of endorsements for the account.
+     */
+    public void endorse(){
+        this.numberOfEndorsements += 1;
     }
 
     @Override
