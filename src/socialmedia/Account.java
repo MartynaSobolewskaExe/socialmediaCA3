@@ -9,6 +9,7 @@ import java.util.List;
 public class Account {
     private int id;
     private int numberOfEndorsements = 0;
+    private int numberOfComments = 0;
     // will increment with each new account. Will make sure that they all have an unique numerical id
     private static int counter = 0;
     private String descriptionField;
@@ -105,6 +106,9 @@ public class Account {
      */
     public void endorse(){
         this.numberOfEndorsements += 1;
+    }
+    public void comment(){
+        this.numberOfComments +=1;
     }
 
     @Override

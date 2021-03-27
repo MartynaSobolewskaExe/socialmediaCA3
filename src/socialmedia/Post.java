@@ -8,11 +8,13 @@ import java.util.List;
  */
 public class Post {
     private int numberOfEndorsements = 0;
+    private int numberOfComments = 0;
     protected int id;
     // will increment with each new post. Will make sure that they all have an unique numerical id
     private static int counter = 0;
     protected String message;
     Account author;
+    List<Endorsement> endorsements = new ArrayList<>();
     List<Comment> comments = new ArrayList<>();
 
 
@@ -23,7 +25,7 @@ public class Post {
     }
 
     /**
-     * Constructor used by Endorsement class (does not throw exception)
+     * Constructor used by child classes (does not throw exception)
      * It also does not set the message.
      * @param author author Account
      */
@@ -63,15 +65,28 @@ public class Post {
         return author;
     }
 
+    public List<Endorsement> getEndorsements() {
+        return endorsements;
+    }
+
     public List<Comment> getComments() {
         return comments;
     }
 
     /**
-     * increments number of endorsements for the post.
+     * increments number of endorsements for the post and adds the endorsement.
      */
-    public void endorse(){
+    public void endorse(Endorsement endorsement){
+        endorsements.add(endorsement);
         this.numberOfEndorsements += 1;
+    }
+
+    /**
+     * increments comments count and adds the comment.
+     */
+    public void comment(Comment comment){
+        comments.add(comment);
+        this.numberOfComments += 1;
     }
 
     @Override
@@ -80,6 +95,7 @@ public class Post {
                 "id=" + id +
                 ", message='" + message + '\'' +
                 ", author=" + author +
+                ", endorsements=" + endorsements +
                 ", comments=" + comments +
                 '}';
     }

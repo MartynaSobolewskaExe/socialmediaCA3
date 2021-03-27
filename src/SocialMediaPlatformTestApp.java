@@ -182,6 +182,33 @@ public class SocialMediaPlatformTestApp {
 			System.out.println("NotActionablePostException thrown correctly");
 		}
 
+		// COMMENTS TESTS
+		//Comment post tests
+		try {
+			platform.commentPost("xyz123", 0,"qwerty. uiopasd fgh jkklzxc. vvbnm...");
+		} catch (PostIDNotRecognisedException e) {
+			assert (false) : "HandleNotRecognisedException thrown incorrectly";
+		} catch (NotActionablePostException e) {
+			assert (false) : "NotActionablePostException thrown incorrectly";
+		} catch (HandleNotRecognisedException e) {
+			assert (false) : "HandleNotRecognisedException thrown incorrectly";
+		} catch (InvalidPostException e) {
+			assert (false) : "InvalidPostException thrown incorrectly";
+		}
+
+		try {
+			platform.commentPost("xyz123", 2,"qwerty. uiopasd fgh jkklzxc. vvbnm...");
+			assert (false) : "Should throw NotActionablePostException";
+		} catch (PostIDNotRecognisedException e) {
+			assert (false) : "HandleNotRecognisedException thrown incorrectly";
+		} catch (NotActionablePostException e) {
+			System.out.println("NotActionablePostException thrown correctly");
+		} catch (HandleNotRecognisedException e) {
+			assert (false) : "HandleNotRecognisedException thrown incorrectly";
+		} catch (InvalidPostException e) {
+			assert (false) : "InvalidPostException thrown incorrectly";
+		}
+
 
 //		assert (platform.getNumberOfAccounts() == 0) : "Innitial SocialMediaPlatform not empty as required.";
 //		assert (platform.getTotalOriginalPosts() == 0) : "Innitial SocialMediaPlatform not empty as required.";

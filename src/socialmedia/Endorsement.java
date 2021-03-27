@@ -10,7 +10,7 @@ public class Endorsement extends Post{
         super(account);
         this.message = endorsedPost.message;
         this.endorsedPost = endorsedPost;
-        endorsedPost.endorse();
+        endorsedPost.endorse(this);
         endorsedPost.author.endorse();
     }
 
