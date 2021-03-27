@@ -14,7 +14,11 @@ public class Account {
     private static int counter = 0;
     private String descriptionField;
     private String handle;
+    private ArrayList<Post> posts = new ArrayList<>();
     private static List<String> accountHandles = new ArrayList<>();
+    Account(){
+
+    }
 
     /**
      * Creates an instance of Account class
@@ -40,6 +44,7 @@ public class Account {
         setHandle(handle);
         setDescriptionField("");
     }
+
 
     public int getId() {
         return id;
@@ -118,5 +123,12 @@ public class Account {
                 ", descriptionField='" + descriptionField + '\'' +
                 ", handle='" + handle + '\'' +
                 '}';
+    }
+    public int getUserEndorsements() {
+        return numberOfEndorsements;
+    }
+
+    public ArrayList<Post> getPosts() {
+        return posts;
     }
 }

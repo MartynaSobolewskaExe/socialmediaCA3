@@ -1,7 +1,7 @@
 package socialmedia;
 
 import javax.security.auth.login.AccountNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -14,7 +14,10 @@ public class SocialMedia implements SocialMediaPlatform {
 
 	private static final Logger LOGGER = Logger.getLogger( SocialMedia.class.getName());
 	private List<Account> accounts = new ArrayList<>();
-	private List<Post> posts = new ArrayList<>();
+	private ArrayList<Post> posts = new ArrayList<>();
+	private StringBuilder childrenPostContent = new StringBuilder();
+	private Account DELETED_USER = new Account();
+
 
 	@Override
 	public int createAccount(String handle) throws IllegalHandleException, InvalidHandleException {
@@ -167,15 +170,73 @@ public class SocialMedia implements SocialMediaPlatform {
 
 	@Override
 	public void deletePost(int id) throws PostIDNotRecognisedException {
-		// TODO Auto-generated method stub
-
+		Post targetPost = new Post();
+		for(Post post: posts){
+			if(post.getId() == id){
+				targetPost = post;
+				break;
+			}
+		}
+		targetPost.setPostContent("<The initial content was deleted from the system, therefore it is not available anymore.>");
+		targetPost.setDeleted(true);
+		for(Post Endorsement: targetPost.getEndorsements()){
+			for(Post post: posts){
+				if(post.getId() == Endorsement.getId()){
+					posts.remove(post);
+					break;
+				}
+			}
+			Endorsement.clearAll();
+		}
 	}
 
 	@Override
 	public String showIndividualPost(int id) throws PostIDNotRecognisedException {
-		// TODO Auto-generated method stub
-		return null;
+		boolean postIDRecognised = false;
+		Post targetPost = new Post();
+		String individualPost;
+		try {
+			for (Post post : posts) {
+				if (post.getId() == id) {
+					postIDRecognised = true;
+					targetPost = post;
+					break;
+				}
+			}
+			if (!postIDRecognised) {
+				throw new PostIDNotRecognisedException("Post Id not recognised exception: Please try again entering a valid Id.");
+			}
+			individualPost = "Id: " + targetPost.getId() + "\nAccount: " + targetPost.getAccount().getHandle()
+					+ "\nNo. endorsements: " + targetPost.getEndorsementCount() + " | No. comments: " + targetPost.getCommentCount() + "\n" + targetPost.getPostContent() + " \n";
+			return individualPost;
+		} catch(PostIDNotRecognisedException e){
+			String message = "Post Id not recognised exception: Please try again entering a valid Id.";
+			return message;
+		}
 	}
+	public void clearStringBuilder(){
+		childrenPostContent.setLength(0);
+	}
+	public void FormatStringBuilder(Post post) throws PostIDNotRecognisedException {
+		try{
+			if(post != null){
+				String individualPost;
+				if(post.isComment()){
+					childrenPostContent.append(("   ").repeat(Math.max(0,post.getDepth()) - 1)).append("| >");
+					individualPost = showIndividualPost(post.getId()).replace("\n","\n" + ("   ").repeat(Math.max(0,post.getDepth())));
+				}else{
+					individualPost = showIndividualPost(post.getId());
+				}
+				childrenPostContent.append(individualPost).append("|\n");
+				for(Post child: post.getPostChildrenList()){
+					FormatStringBuilder(child);
+				}
+			}}
+		catch(PostIDNotRecognisedException e){
+			System.out.println("PROBLEM WITH showingIndividualPosts()");
+		}
+	}
+
 
 	@Override
 	public StringBuilder showPostChildrenDetails(int id)
@@ -186,55 +247,121 @@ public class SocialMedia implements SocialMediaPlatform {
 
 	@Override
 	public int getNumberOfAccounts() {
-		// TODO Auto-generated method stub
-		return 0;
+		return accounts.size();
 	}
 
 	@Override
 	public int getTotalOriginalPosts() {
-		// TODO Auto-generated method stub
-		return 0;
+		int count = 0;
+		for(Post post: posts){
+			if(post.isComment() || post.isEndorsement()){
+				continue;
+			}
+			count++;
+		}
+		return count;
 	}
 
 	@Override
 	public int getTotalEndorsmentPosts() {
-		// TODO Auto-generated method stub
-		return 0;
+		int count = 0;
+		for(Post post: posts){
+			if(!post.isEndorsement()){
+				continue;
+			}
+			count++;
+		}
+		return count;
 	}
 
 	@Override
 	public int getTotalCommentPosts() {
-		// TODO Auto-generated method stub
-		return 0;
+		int count = 0;
+		for(Post post: posts){
+			if(!post.isComment()){
+				continue;
+			}
+			count++;
+		}
+		return count;
 	}
 
 	@Override
 	public int getMostEndorsedPost() {
-		// TODO Auto-generated method stub
-		return 0;
+		Post MostEndorsed = new Post();
+		for(Post post : posts){
+			if(post.isEndorsement()){
+				continue;
+			}
+			if(MostEndorsed.getAccount() == null){
+				MostEndorsed = post;
+			}
+			else if(MostEndorsed.getEndorsementCount() < post.getEndorsementCount()){
+				MostEndorsed = post;
+			}
+
+		}
+		return MostEndorsed.getId();
+
 	}
 
 	@Override
 	public int getMostEndorsedAccount() {
-		// TODO Auto-generated method stub
-		return 0;
+		Account MostEndorsed = new Account();
+		for(Account user : accounts){
+			if(MostEndorsed.getHandle() == null){
+				MostEndorsed = user;
+			}
+			else if(MostEndorsed.getUserEndorsements() < user.getUserEndorsements()){
+				MostEndorsed = user;
+			}
+		}
+		return MostEndorsed.getId();
+
 	}
 
 	@Override
 	public void erasePlatform() {
-		// TODO Auto-generated method stub
+		for(Account account: accounts){
+			account.getPosts().clear();
+		}
+		accounts.clear();
+		for(Post posts: posts){
+			posts.getPostChildrenList().clear();
+			posts.getEndorsements().clear();
+			posts.clearAccount();
+		}
+		posts.clear();
+		DELETED_USER.getPosts().clear();
 
 	}
 
 	@Override
 	public void savePlatform(String filename) throws IOException {
-		// TODO Auto-generated method stub
-
+		try{
+			FileOutputStream fileStore = new FileOutputStream(filename + ".ser");
+			ObjectOutputStream objectStore = new ObjectOutputStream(fileStore);
+			objectStore.writeObject(accounts);
+			objectStore.writeObject(posts);
+			objectStore.writeObject(DELETED_USER);
+			objectStore.close();
+			fileStore.close(); }
+		catch(IOException e){
+			System.out.println("Unfortunately, not able to find the file. Please try again.");
+		}
 	}
 
 	@Override
 	public void loadPlatform(String filename) throws IOException, ClassNotFoundException {
-		// TODO Auto-generated method stub
+		try{
+			ObjectInputStream ois = new ObjectInputStream(new FileInputStream(filename + ".ser"));
+			accounts = (ArrayList<Account>) ois.readObject();
+			posts = (ArrayList<Post>) ois.readObject();
+			DELETED_USER = (Account) ois.readObject();
+			ois.close();}
+		catch(IOException | ClassNotFoundException e) {
+			System.out.println("Unfortunately, the class or the file were not found. Please try again.");
+		}
 
 	}
 
