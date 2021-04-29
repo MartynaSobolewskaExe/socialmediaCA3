@@ -210,26 +210,26 @@ public class SocialMediaPlatformTestApp {
 		}
 
 
-//		assert (platform.getNumberOfAccounts() == 0) : "Innitial SocialMediaPlatform not empty as required.";
-//		assert (platform.getTotalOriginalPosts() == 0) : "Innitial SocialMediaPlatform not empty as required.";
-//		assert (platform.getTotalCommentPosts() == 0) : "Innitial SocialMediaPlatform not empty as required.";
-//		assert (platform.getTotalEndorsmentPosts() == 0) : "Innitial SocialMediaPlatform not empty as required.";
-//
-//		Integer id;
-//		try {
-//			id = platform.createAccount("my_handle");
-//			assert (platform.getNumberOfAccounts() == 1) : "number of accounts registered in the system does not match";
-//
-//			platform.removeAccount(id);
-//			assert (platform.getNumberOfAccounts() == 0) : "number of accounts registered in the system does not match";
-//
-//		} catch (IllegalHandleException e) {
-//			assert (false) : "IllegalHandleException thrown incorrectly";
-//		} catch (InvalidHandleException e) {
-//			assert (false) : "InvalidHandleException thrown incorrectly";
-//		} catch (AccountIDNotRecognisedException e) {
-//			assert (false) : "AccountIDNotRecognizedException thrown incorrectly";
-//		}
+		assert (platform.getNumberOfAccounts() == 0) : "Innitial SocialMediaPlatform not empty as required.";
+		assert (platform.getTotalOriginalPosts() == 0) : "Innitial SocialMediaPlatform not empty as required.";
+		assert (platform.getTotalCommentPosts() == 0) : "Innitial SocialMediaPlatform not empty as required.";
+		assert (platform.getTotalEndorsmentPosts() == 0) : "Innitial SocialMediaPlatform not empty as required.";
+
+		Integer id;
+		try {
+			id = platform.createAccount("my_handle");
+			assert (platform.getNumberOfAccounts() == 1) : "number of accounts registered in the system does not match";
+
+			platform.removeAccount(id);
+			assert (platform.getNumberOfAccounts() == 0) : "number of accounts registered in the system does not match";
+
+		} catch (IllegalHandleException e) {
+			assert (false) : "IllegalHandleException thrown incorrectly";
+		} catch (InvalidHandleException e) {
+			assert (false) : "InvalidHandleException thrown incorrectly";
+		} catch (AccountIDNotRecognisedException e) {
+			assert (false) : "AccountIDNotRecognizedException thrown incorrectly";
+		}
 
 	}
 
